@@ -31,7 +31,20 @@ jobs:
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
-
+      
+    - name: phpcsfixer
+      run: ./vendor/bin/php-cs-fixer fix --dry-run --config=php_cs.dist
+      
+    - name: phpstan
+      run: ./vendor/bin/phpstan analyse src public tests --memory-limit=-1
+      
+    - name: unitTests
+      run: php -dxdebug.mode=coverage vendor/bin/phpunit tests/unitTests --testdox --coverage-clover=report/unitTests/coverage-report.clover --log-junit=report/unitTests/report.xml
+      
+    - name: integrationTests
+      run: php -dxdebug.mode=coverage vendor/bin/phpunit tests/integrationTests --testdox --coverage-clover=report/integrationTests/coverage-report.clover --log-junit=report/integrationTests/report.xml
+      
+      
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
 
